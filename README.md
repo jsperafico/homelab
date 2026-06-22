@@ -16,10 +16,25 @@ There is much work to be done. I do intent to:
 
 - [ ] Use Azure Key Vault to securely storage my secrets and keys
 - [ ] Use OpenTofu to provision virtual machines at Proxmox instance.
-  - [?] [Open Media Vault](https://www.openmediavault.org/) as NAS Solution.
-  - [X] [Talos Linux](https://www.talos.dev/) as my Kubernetes Solution, composed of 1 ControlPlane and 1 Worker.
+  - [ ] [Open Media Vault](https://www.openmediavault.org/) as NAS Solution containing:
+    - [X] SMB shared folder for every user with quota.
+    - [X] NFS shared PostgreSQL folder.
+    - [ ] NFS shared Kubernetes folder.
+  - [X] [PostgreSQL](https://www.postgresql.org/) connected to NFS shared folder.
+  - [ ] [Talos Linux](https://www.talos.dev/) as my Kubernetes Solution:
+    - [X] 1 ControlPlane
+    - [X] 1 Worker
+    - [ ] Through ControlPlane, worker should have access to NFS shared folder.
   - [ ] [Ubuntu 26.04](https://releases.ubuntu.com/resolute/) as Gaming Station.
+    - [ ] GPU just died. RIP.
 - [ ] On Kubernetes use [Flux](https://fluxcd.io/) as GitOps, likely with OpenTofu as well.
+
+
+## Repository Overview
+
+| Folder    | Purpose                                  |
+| --------- | ---------------------------------------- |
+| terraform | Folder where tofu artefacts are located. |
 
 ## Open Media Vault
 
@@ -34,11 +49,13 @@ As it is, there is no reliable provider where allows me to:
 - Create Shared Folders
 - Enable SMB and NFS Services
 
-## Repository Overview
+## PostgreSQL
 
-| Folder    | Purpose                                  |
-| --------- | ---------------------------------------- |
-| terraform | Folder where tofu artefacts are located. |
+Yes, I know that my configuration goes against best practices of DevOps. It isn't a critical database, so saving the data inside NFS should be just fine.
+Both OpenMediaVault and PostgreSQL live inside the same host as VMs, so it should be just fine.
+In any case, I will not have too many accesses to the database, since it will for development purposes.
+
+Sure, I could just use a pod inside kubernetes but - in my opinion - create pods for database every time I want just to try things out it would be a waste of resources.
 
 ## Open Tofu
 
