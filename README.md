@@ -14,19 +14,25 @@ As can be seen, it isn't fancy as most people have online. At the same time, hos
 
 There is much work to be done. I do intent to:
 
-- [ ] Use Azure Key Vault to securely storage my secrets and keys
-- [ ] Use OpenTofu to provision virtual machines at Proxmox instance.
+- [ ] Use [Azure Key Vault](https://azure.microsoft.com/pt-br/products/key-vault) to securely storage my secrets and keys
+- [ ] Use [Ansible](https://docs.ansible.com/) to manage updates on VMs and BareMetal.
+- [ ] Use [Gitlab](https://github.com/) action to persist changes on my Homelab by creating a private on-the-fly private connection on [Pangolin](https://pangolin.net/).
+- [ ] Use [OpenTofu](https://opentofu.org/) to provision virtual machines at Proxmox instance.
   - [ ] [Open Media Vault](https://www.openmediavault.org/) as NAS Solution containing:
     - [X] SMB shared folder for every user with quota.
     - [X] NFS shared PostgreSQL folder.
-    - [ ] NFS shared Kubernetes folder.
+    - [X] NFS shared Kubernetes folder.
   - [X] [PostgreSQL](https://www.postgresql.org/) connected to NFS shared folder.
-  - [ ] [Talos Linux](https://www.talos.dev/) as my Kubernetes Solution:
+  - [X] [Talos Linux](https://www.talos.dev/) as my Kubernetes Solution:
     - [X] 1 ControlPlane
     - [X] 1 Worker
-    - [ ] Through ControlPlane, worker should have access to NFS shared folder.
+    - [X] Through ControlPlane, worker should have access to NFS shared folder.
+  - [ ] [Forgejo](https://forgejo.org/) as an alternative to GitHub when regards to comissioned work.
+    - [ ] Migrate existing projects to Self-Hosted instance.
+    - [ ] Streamline Kubernetes deployments.
+    - [ ] Manage Newt connections to different kubernetes applications based on comissioned projects.
   - [ ] [Ubuntu 26.04](https://releases.ubuntu.com/resolute/) as Gaming Station.
-    - [ ] GPU just died. RIP.
+    - [ ] GPU just died. RIP. So, this step is on hold until further budget.
 - [ ] On Kubernetes use [Flux](https://fluxcd.io/) as GitOps, likely with OpenTofu as well.
 
 
@@ -36,9 +42,34 @@ There is much work to be done. I do intent to:
 | --------- | ---------------------------------------- |
 | terraform | Folder where tofu artefacts are located. |
 
+
 ## Open Media Vault
 
-Despite my best efforts, there was little to be done when regards to Open Media Vault.
+Since my OMV instance isn't being managed by Terraform, it would be quite difficult to identify what version I am using, right?
+So, currently I have `8.4.0-3 (Synchrony)` vertsion on a `Linux 7.0.10+deb13-amd64` kernel.
+
+What I have done manually on OMV was:
+1. Enable the following plugins `openmediavault-filebrowser 8.0.6-1` and `openmediavault-md 8.1.2-2`.
+2. Wipe both of my HDD disks being `/dev/sdb` and `/dev/sdc`.
+3. Mirror (RAID 1) both of them, in the Multiple Device pannel.
+4. Create a file system for the device `/dev/md0` being the output of the Mirroring.
+5. Created a shared folders for `kubernetes`, `postgres` and `userdir` on `/dev/md0` with no extra caveats or ACL:
+6. Under `Services` -> `NFS`, I created both:
+   1. kubernetes:
+      - Shared Folder: `kubernetes [on /dev/md0, kubernetes/]`
+      - Client: `192.168.1.0/24` - I am aware this isn´t recommended, but at the same time it is just a homelab.
+      - Permission: `Read/Write`
+      - Extra Options: `subtree_check,insecure,no_subtree_check,no_root_squash`
+   2. postgres:
+      - Shared Folder: `postgres [on /dev/md0, postgres/]`
+      - Client: `192.168.1.110/24` - I am aware this isn´t recommended, but at the same time it is just a homelab.
+      - Permission: `Read/Write`
+      - Extra Options: `subtree_check,insecure,no_root_squash`
+7. Under `Services` -> `SMB` -> `Settings`:
+   1. `Enabled` the service itself
+   2. `Enabled` home directories
+
+Despite my best efforts, there was little to be done when regards to Open Media Vault on terraform.
 As it is, there is no reliable provider where allows me to:
 
 - Create a New User
@@ -68,3 +99,4 @@ Useful tips when using terraform:
 | `tofu apply`              | Apply changes to infra.                         |
 | `tofu destroy`            | Destroy previously-created infrastructure.      |
 | `tofu output -raw xxxxxx` | Print on console the respective output          |
+

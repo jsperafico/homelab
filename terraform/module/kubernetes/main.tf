@@ -62,7 +62,7 @@ resource "proxmox_virtual_environment_vm" "talos" {
 
   cdrom {
     interface = "scsi1"
-    file_id   = "local:iso/talos-nocloud-amd64.1.13.4.iso"
+    file_id   = "local:iso/talos-nocloud-amd64.1.13.5.iso"
   }
 
   disk {
@@ -175,4 +175,52 @@ resource "talos_machine_configuration_apply" "worker" {
       gateway      = each.value.gateway
     })
   ]
+}
+
+resource "helm_release" "csi_driver_nfs" {
+  depends_on = [talos_machine_configuration_apply.worker]
+
+  name       = "csi-driver-nfs"
+  repository = "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts"
+  chart      = "csi-driver-nfs"
+
+  namespace        = "kube-system"
+  create_namespace = false
+}
+
+resource "kubernetes_storage_class_v1" "omv_nfs" {
+  depends_on = [helm_release.csi_driver_nfs]
+
+  metadata {
+    name = "omv-nfs"
+  }
+
+  storage_provisioner = "nfs.csi.k8s.io"
+
+  parameters = {
+    server = "192.168.1.131"
+    share  = "/kubernetes"
+  }
+
+  reclaim_policy      = "Retain"
+  volume_binding_mode = "Immediate"
+}
+
+resource "kubernetes_persistent_volume_claim_v1" "test-nfs" {
+  depends_on = [kubernetes_storage_class_v1.omv_nfs]
+
+  metadata {
+    name = "test-nfs"
+  }
+
+  spec {
+    access_modes       = ["ReadWriteMany"]
+    storage_class_name = "omv-nfs"
+
+    resources {
+      requests = {
+        storage = "1Gi"
+      }
+    }
+  }
 }

@@ -44,12 +44,33 @@ provider "proxmox" {
 
 provider "talos" {}
 
+provider "helm" {
+  kubernetes = {
+    host = yamldecode(module.kubernetes.kubeconfig).clusters[0].cluster.server
+
+    client_certificate     = base64decode(yamldecode(module.kubernetes.kubeconfig).users[0].user.client-certificate-data)
+    client_key             = base64decode(yamldecode(module.kubernetes.kubeconfig).users[0].user.client-key-data)
+    cluster_ca_certificate = base64decode(yamldecode(module.kubernetes.kubeconfig).clusters[0].cluster.certificate-authority-data)
+  }
+}
+
+provider "kubernetes" {
+  host = yamldecode(module.kubernetes.kubeconfig).clusters[0].cluster.server
+
+  client_certificate     = base64decode(yamldecode(module.kubernetes.kubeconfig).users[0].user.client-certificate-data)
+  client_key             = base64decode(yamldecode(module.kubernetes.kubeconfig).users[0].user.client-key-data)
+  cluster_ca_certificate = base64decode(yamldecode(module.kubernetes.kubeconfig).clusters[0].cluster.certificate-authority-data)
+}
+
+
 module "kubernetes" {
   source = "./module/kubernetes"
 
   providers = {
-    proxmox = proxmox
-    talos   = talos
+    proxmox    = proxmox
+    talos      = talos
+    helm       = helm
+    kubernetes = kubernetes
   }
 }
 
