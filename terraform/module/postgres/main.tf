@@ -9,10 +9,15 @@ variable "UBUNTU_PASS" {
   sensitive = true
 }
 
+variable "POSTGRES_PASS" {
+  type      = string
+  sensitive = true
+}
+
 locals {
   vms = {
-    "postgres-1" = {
-      hostname    = "postgres-1"
+    "postgres-01" = {
+      hostname    = "postgres-01"
       id          = 2001
       target_node = "homelab"
       memory      = 4096
@@ -47,6 +52,7 @@ resource "proxmox_virtual_environment_file" "cloudinit" {
         nfs_export = "/postgres"
         user       = var.UBUNTU_USER
         pass       = var.UBUNTU_PASS
+        db_pass    = var.POSTGRES_PASS
       }
     )
     file_name = "${each.value.hostname}-cloud-init.yaml"

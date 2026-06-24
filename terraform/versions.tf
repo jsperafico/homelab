@@ -16,5 +16,9 @@ terraform {
       source  = "hashicorp/helm"
       version = "3.2.0"
     }
+    postgresql = {
+      source  = "a0s/postgresql"
+      version = "1.14.0-jumphost-1"
+    }
   }
 }

@@ -49,9 +49,21 @@ write_files:
       fi
 
       sed -i "s|^data_directory.*|data_directory = '$DATA_DIR'|" /etc/postgresql/$${PGVER}/main/postgresql.conf || true
+      sed -i "s/^#\?listen_addresses.*/listen_addresses = '*'/" /etc/postgresql/$${PGVER}/main/postgresql.conf || true
+
+      grep -q "192.168.1.0/24" \
+        /etc/postgresql/$${PGVER}/main/pg_hba.conf || \
+      cat <<EOF >> /etc/postgresql/$${PGVER}/main/pg_hba.conf
+      host    all    all    192.168.1.0/24    scram-sha-256
+      EOF
 
       systemctl enable postgresql
       systemctl restart postgresql
+
+      set +x
+      NEW_PASSWORD="${db_pass}"
+      sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$NEW_PASSWORD';"
+      set -x
 
 mounts:
   - [

@@ -16,7 +16,7 @@ There is much work to be done. I do intent to:
 
 - [ ] Use [Azure Key Vault](https://azure.microsoft.com/pt-br/products/key-vault) to securely storage my secrets and keys
 - [ ] Use [Ansible](https://docs.ansible.com/) to manage updates on VMs and BareMetal.
-- [ ] Use [Gitlab](https://github.com/) action to persist changes on my Homelab by creating a private on-the-fly private connection on [Pangolin](https://pangolin.net/).
+- [ ] Use [GitHub](https://github.com/) action to persist changes on my Homelab by creating a private on-the-fly private connection on [Pangolin](https://pangolin.net/).
 - [ ] Use [OpenTofu](https://opentofu.org/) to provision virtual machines at Proxmox instance.
   - [ ] [Open Media Vault](https://www.openmediavault.org/) as NAS Solution containing:
     - [X] SMB shared folder for every user with quota.
@@ -28,7 +28,7 @@ There is much work to be done. I do intent to:
     - [X] 1 Worker
     - [X] Through ControlPlane, worker should have access to NFS shared folder.
   - [ ] [Forgejo](https://forgejo.org/) as an alternative to GitHub when regards to comissioned work.
-    - [ ] Migrate existing projects to Self-Hosted instance.
+    - [X] Migrate existing projects to Self-Hosted instance.
     - [ ] Streamline Kubernetes deployments.
     - [ ] Manage Newt connections to different kubernetes applications based on comissioned projects.
   - [ ] [Ubuntu 26.04](https://releases.ubuntu.com/resolute/) as Gaming Station.
@@ -100,3 +100,7 @@ Useful tips when using terraform:
 | `tofu destroy`            | Destroy previously-created infrastructure.      |
 | `tofu output -raw xxxxxx` | Print on console the respective output          |
 
+## Forgejo
+
+Previously I had a self-hosted gitlab instance that not only required a quite large amount of resources but also too complicated to manage.
+Now, hoping to simplify my like, I have chosen Forgejo as my self-hosted VCS. Quite easily to migrate things to be honest.
