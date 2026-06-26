@@ -24,6 +24,11 @@ locals {
       cpu         = 2
       ip_address  = "192.168.1.110"
       gateway     = "192.168.1.1"
+      order = {
+        index      = 2
+        up_delay   = 60
+        down_delay = 30
+      }
     }
   }
 }
@@ -100,5 +105,11 @@ resource "proxmox_virtual_environment_vm" "postgres" {
     file_id      = proxmox_download_file.ubuntu_cloud_image.id
     interface    = "scsi0"
     size         = 20
+  }
+
+  startup {
+    order      = each.value.order.index
+    up_delay   = each.value.order.up_delay
+    down_delay = each.value.order.down_delay
   }
 }

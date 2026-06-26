@@ -9,6 +9,11 @@ locals {
       ip_address   = "192.168.1.130"
       gateway      = "192.168.1.1"
       install_disk = "/dev/sda"
+      order = {
+        index      = 2
+        up_delay   = 60
+        down_delay = 30
+      }
     },
     "talos-ND-01" = {
       hostname     = "talos-ND-01"
@@ -19,6 +24,11 @@ locals {
       ip_address   = "192.168.1.200"
       gateway      = "192.168.1.1"
       install_disk = "/dev/sda"
+      order = {
+        index      = 3
+        up_delay   = 90
+        down_delay = 30
+      }
     },
   }
 
@@ -95,6 +105,12 @@ resource "proxmox_virtual_environment_vm" "talos" {
         gateway = each.value.gateway
       }
     }
+  }
+
+  startup {
+    order      = each.value.order.index
+    up_delay   = each.value.order.up_delay
+    down_delay = each.value.order.down_delay
   }
 }
 
