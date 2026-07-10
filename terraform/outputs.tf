@@ -18,3 +18,8 @@ output "forgejo-cloud-init" {
   sensitive = true
 }
 
+output "forgejo-runner-cloud-init" {
+  value     = module.forgejo-runner.forgejo-runner-cloud-init
+  sensitive = true
+}
+

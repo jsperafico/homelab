@@ -47,6 +47,16 @@ variable "P_FORGEJO_PASS" {
   sensitive = true
 }
 
+variable "FORGEJO_RUNNER_UUID" {
+  type      = string
+  sensitive = true
+}
+
+variable "FORGEJO_RUNNER_TOKEN" {
+  type      = string
+  sensitive = true
+}
+
 provider "proxmox" {
   endpoint  = "https://${var.PM_IP}:8006/"
   api_token = "${var.PM_ID_TOKEN}=${var.PM_TOKEN}"
@@ -126,4 +136,21 @@ module "forgejo" {
   P_FORGEJO_USER        = var.P_FORGEJO_USER
   P_FORGEJO_PASS        = var.P_FORGEJO_PASS
   UBUNTU_CLOUD_IMAGE_ID = module.postgres.ubuntu_cloud_image_id
+}
+
+module "forgejo-runner" {
+  depends_on = [module.forgejo]
+
+  source = "./module/forgejo-runner"
+
+  providers = {
+    proxmox = proxmox
+  }
+
+  UBUNTU_USER           = var.UBUNTU_USER
+  UBUNTU_PASS           = var.UBUNTU_PASS
+  FORGEJO_IP            = module.forgejo.forgejo_default_ip
+  UBUNTU_CLOUD_IMAGE_ID = module.postgres.ubuntu_cloud_image_id
+  FORGEJO_RUNNER_UUID   = var.FORGEJO_RUNNER_UUID
+  FORGEJO_RUNNER_TOKEN  = var.FORGEJO_RUNNER_TOKEN
 }

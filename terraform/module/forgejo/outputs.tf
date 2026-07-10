@@ -4,3 +4,14 @@ output "forgejo-cloud-init" {
   }
   sensitive = true
 }
+
+output "forgejo_default_ip" {
+  value = split(
+    "/",
+    proxmox_virtual_environment_vm.forgejo["forgejo-01"]
+    .initialization[0]
+    .ip_config[0]
+    .ipv4[0]
+    .address
+  )[0]
+}

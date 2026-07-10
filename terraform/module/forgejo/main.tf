@@ -89,7 +89,7 @@ resource "proxmox_virtual_environment_file" "cloudinit" {
 
   source_raw {
     data = templatefile(
-      "${path.module}/cloud_init.tpl",
+      "${path.module}/templates/cloud_init.tpl",
       {
         hostname        = each.value.hostname
         omv_ip          = "192.168.1.131"

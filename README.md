@@ -29,8 +29,11 @@ There is much work to be done. I do intent to:
     - [X] Through ControlPlane, worker should have access to NFS shared folder.
   - [ ] [Forgejo](https://forgejo.org/) as an alternative to GitHub when regards to comissioned work.
     - [X] Migrate existing projects to Self-Hosted instance.
+    - [X] Register a new Runner as self-hosted to prevent unnecessary docker inside vm.
     - [ ] Streamline Kubernetes deployments.
     - [ ] Manage Newt connections to different kubernetes applications based on comissioned projects.
+  - [X] [Forgejo Runner](https://forgejo.org/) a runner able to execute jobs insise forgejo.
+    - [X] Due to Forgejo restrictions, I am unable to independently deploy several runners since each registered one must have a new UUID and not a predefined one.
   - [ ] [Ubuntu 26.04](https://releases.ubuntu.com/resolute/) as Gaming Station.
     - [ ] GPU just died. RIP. So, this step is on hold until further budget.
 - [ ] On Kubernetes use [Flux](https://fluxcd.io/) as GitOps, likely with OpenTofu as well.

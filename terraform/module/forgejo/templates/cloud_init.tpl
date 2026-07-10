@@ -23,6 +23,7 @@ packages:
   - git
   - git-lfs
   - wget
+  - jq
   - qemu-guest-agent
   - nfs-common
 
@@ -65,6 +66,10 @@ write_files:
         https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64
 
       chmod +x /usr/local/bin/forgejo
+
+      # Template
+      # https://codeberg.org/forgejo/forgejo/src/branch/forgejo/custom/conf/app.example.ini
+      #
 
       set +x
       cat >/etc/forgejo/app.ini <<EOF
