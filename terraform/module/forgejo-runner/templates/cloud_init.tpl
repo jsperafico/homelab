@@ -117,6 +117,8 @@ write_files:
 runcmd:
   - bash /usr/local/bin/configure-forgejo-runner.sh
   - systemctl daemon-reload
+  - curl -fsSL https://deb.nodesource.com/setup_26.x | bash -
+  - apt-get install -y nodejs
   - systemctl enable forgejo-runner
   - systemctl start forgejo-runner
   - systemctl enable --now qemu-guest-agent
