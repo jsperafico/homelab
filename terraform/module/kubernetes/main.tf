@@ -11,7 +11,7 @@ locals {
       install_disk = "/dev/sda"
       order = {
         index      = 2
-        up_delay   = 60
+        up_delay   = 30
         down_delay = 30
       }
     },
@@ -26,7 +26,7 @@ locals {
       install_disk = "/dev/sda"
       order = {
         index      = 3
-        up_delay   = 90
+        up_delay   = 30
         down_delay = 30
       }
     },
@@ -158,6 +158,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
       gateway      = each.value.gateway
     }),
     file("${path.module}/files/cp-scheduling.yaml"),
+    file("${path.module}/files/forgejo-registry.yaml") //trocar para tmpl e passar o ip do forgejo como variável
   ]
 }
 

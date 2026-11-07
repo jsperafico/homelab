@@ -36,7 +36,7 @@ locals {
       install_disk = "/dev/sda"
       order = {
         index      = 4
-        up_delay   = 120
+        up_delay   = 30
         down_delay = 30
       }
       forgejo = {
