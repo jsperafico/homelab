@@ -76,6 +76,12 @@ mounts:
     ]
 
 runcmd:
+  - [mkdir, -p, /etc/systemd/system/postgresql@.service.d]
+  - |
+    cat > /etc/systemd/system/postgresql@.service.d/nfs.conf <<'EOF'
+    [Unit]
+    RequiresMountsFor=/pgdata
+    EOF
   - [systemctl, daemon-reload]
   - [systemctl, enable, qemu-guest-agent]
   - [systemctl, start, qemu-guest-agent]

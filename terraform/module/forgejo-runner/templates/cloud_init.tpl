@@ -119,6 +119,32 @@ runcmd:
   - systemctl daemon-reload
   - curl -fsSL https://deb.nodesource.com/setup_26.x | bash -
   - apt-get install -y nodejs
+  - apt-get install -y \
+    xvfb \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2t64 \
+    libgtk-3-0 \
+    libgbm1 \
+    libnotify4 \
+    libnss3 \
+    libxss1 \
+    libasound2t64 \
+    libxtst6 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libxkbcommon0 \
+    libdrm2 \
+    xauth
+  - apt-get install -y buildah skopeo fuse-overlayfs uidmap
+  - apt-get install -y ca-certificates curl
+  - mkdir -p /etc/apt/keyrings
+  - curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  - echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
+  - sudo apt update
+  - apt install -y kubectl
   - systemctl enable forgejo-runner
   - systemctl start forgejo-runner
   - systemctl enable --now qemu-guest-agent

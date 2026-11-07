@@ -26,7 +26,7 @@ locals {
       gateway     = "192.168.1.1"
       order = {
         index      = 2
-        up_delay   = 60
+        up_delay   = 30
         down_delay = 30
       }
     }
