@@ -1,7 +1,7 @@
 # Homelab Overview
 
 At least so far, my homelab is composed as a Single Machine. Over there, I have installed [Proxmox VE](https://www.proxmox.com/en/downloads) as the operating system.
-I do not own a dedicated IP address from my ISP. Therefore, do I use [Pangolin](https://pangolin.net/) as my Zero Trust Network Access. 
+I do not own a dedicated IP address from my ISP. Therefore, do I use [NetBird](https://netbird.io/) as my Zero Trust Network Access. 
 My laptop currently runs on windows, planning to migrate to Linux as soon as possible.
 
 In order to create a compelling Infrastrucutre-as-Code, I use to use GitHub Actions to connect to my Homelab. 
@@ -16,9 +16,9 @@ There is much work to be done. I do intent to:
 
 - [ ] Use [Azure Key Vault](https://azure.microsoft.com/pt-br/products/key-vault) to securely storage my secrets and keys
 - [ ] Use [Ansible](https://docs.ansible.com/) to manage updates on VMs and BareMetal.
-- [ ] Use [GitHub](https://github.com/) action to persist changes on my Homelab by creating a private on-the-fly private connection on [Pangolin](https://pangolin.net/).
-- [ ] Use [OpenTofu](https://opentofu.org/) to provision virtual machines at Proxmox instance.
-  - [ ] [Open Media Vault](https://www.openmediavault.org/) as NAS Solution containing:
+- [ ] Use [GitHub](https://github.com/) action to persist changes on my Homelab by creating a private on-the-fly private connection on [NetBird](https://netbird.io/).
+- [X] Use [OpenTofu](https://opentofu.org/) to provision virtual machines at Proxmox instance.
+  - [X] [Open Media Vault](https://www.openmediavault.org/) as NAS Solution containing:
     - [X] SMB shared folder for every user with quota.
     - [X] NFS shared PostgreSQL folder.
     - [X] NFS shared Kubernetes folder.
@@ -27,11 +27,10 @@ There is much work to be done. I do intent to:
     - [X] 1 ControlPlane
     - [X] 1 Worker
     - [X] Through ControlPlane, worker should have access to NFS shared folder.
-  - [ ] [Forgejo](https://forgejo.org/) as an alternative to GitHub when regards to comissioned work.
+  - [X] [Forgejo](https://forgejo.org/) as an alternative to GitHub when regards to comissioned work.
     - [X] Migrate existing projects to Self-Hosted instance.
     - [X] Register a new Runner as self-hosted to prevent unnecessary docker inside vm.
-    - [ ] Streamline Kubernetes deployments.
-    - [ ] Manage Newt connections to different kubernetes applications based on comissioned projects.
+    - [X] Streamline Kubernetes deployments.
   - [X] [Forgejo Runner](https://forgejo.org/) a runner able to execute jobs insise forgejo.
     - [X] Due to Forgejo restrictions, I am unable to independently deploy several runners since each registered one must have a new UUID and not a predefined one.
   - [ ] [Ubuntu 26.04](https://releases.ubuntu.com/resolute/) as Gaming Station.
@@ -56,8 +55,8 @@ What I have done manually on OMV was:
 2. Wipe both of my HDD disks being `/dev/sdb` and `/dev/sdc`.
 3. Mirror (RAID 1) both of them, in the Multiple Device pannel.
 4. Create a file system for the device `/dev/md0` being the output of the Mirroring.
-5. Created a shared folders for `kubernetes`, `postgres` and `userdir` on `/dev/md0` with no extra caveats or ACL:
-6. Under `Services` -> `NFS`, I created both:
+5. Created a shared folders for `kubernetes`, `postgres`, `adguard` and `userdir` on `/dev/md0` with no extra caveats or ACL:
+6. Under `Services` -> `NFS`, I created:
    1. kubernetes:
       - Shared Folder: `kubernetes [on /dev/md0, kubernetes/]`
       - Client: `192.168.1.0/24` - I am aware this isn´t recommended, but at the same time it is just a homelab.
@@ -68,6 +67,11 @@ What I have done manually on OMV was:
       - Client: `192.168.1.110/24` - I am aware this isn´t recommended, but at the same time it is just a homelab.
       - Permission: `Read/Write`
       - Extra Options: `subtree_check,insecure,no_root_squash`
+   3. AdGuard:
+      - Shared Folder: `kubernetes [on /dev/md0, adguard/]`
+      - Client: `192.168.1.0/24` - I am aware this isn´t recommended, but at the same time it is just a homelab.
+      - Permission: `Read/Write`
+      - Extra Options: `subtree_check,insecure,no_subtree_check,no_root_squash`
 7. Under `Services` -> `SMB` -> `Settings`:
    1. `Enabled` the service itself
    2. `Enabled` home directories

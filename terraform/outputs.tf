@@ -23,3 +23,7 @@ output "forgejo-runner-cloud-init" {
   sensitive = true
 }
 
+output "adguard_default_ip" {
+  value     = module.adguard.adguard_default_ip
+  sensitive = true
+}

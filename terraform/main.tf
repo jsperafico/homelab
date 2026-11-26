@@ -57,6 +57,15 @@ variable "FORGEJO_RUNNER_TOKEN" {
   sensitive = true
 }
 
+variable "ADGUARD_WEB_USER" {
+  type = string
+}
+
+variable "ADGUARD_WEB_PASS" {
+  type      = string
+  sensitive = true
+}
+
 provider "proxmox" {
   endpoint  = "https://${var.PM_IP}:8006/"
   api_token = "${var.PM_ID_TOKEN}=${var.PM_TOKEN}"
@@ -153,4 +162,18 @@ module "forgejo-runner" {
   UBUNTU_CLOUD_IMAGE_ID = module.postgres.ubuntu_cloud_image_id
   FORGEJO_RUNNER_UUID   = var.FORGEJO_RUNNER_UUID
   FORGEJO_RUNNER_TOKEN  = var.FORGEJO_RUNNER_TOKEN
+}
+
+module "adguard" {
+  source = "./module/adguard"
+
+  providers = {
+    proxmox = proxmox
+  }
+
+  UBUNTU_USER           = var.UBUNTU_USER
+  UBUNTU_PASS           = var.UBUNTU_PASS
+  UBUNTU_CLOUD_IMAGE_ID = module.postgres.ubuntu_cloud_image_id
+  ADGUARD_WEB_USER      = var.ADGUARD_WEB_USER
+  ADGUARD_WEB_PASS      = var.ADGUARD_WEB_PASS
 }
